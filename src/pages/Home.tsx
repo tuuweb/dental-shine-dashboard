@@ -263,8 +263,8 @@ export function Home() {
       <section className="py-20">
         <div className="mx-auto max-w-4xl px-4 text-center card-soft p-10 md:p-16">
           <ToothIcon size={48} className="text-primary mx-auto mb-4 tooth-bounce"/>
-          <h2 className="text-3xl md:text-4xl font-bold">¿Listo para una nueva sonrisa?</h2>
-          <p className="text-muted-foreground mt-3">Agenda tu valoración hoy mismo y recibe asesoría personalizada.</p>
+          <h2 className="text-3xl md:text-4xl font-bold">{t("home.ctaTitle")}</h2>
+          <p className="text-muted-foreground mt-3">{t("home.ctaText")}</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link to="/agendar" className="btn-primary"><Calendar size={18}/> {t("cta.book")}</Link>
             <Link to="/contacto" className="btn-outline">{t("cta.contact")}</Link>
