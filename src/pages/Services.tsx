@@ -20,8 +20,14 @@ export function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="card-soft p-6 flex flex-col"
+              className="card-soft p-6 flex flex-col relative overflow-hidden isolate"
             >
+              {s.image && (
+                <>
+                  <img src={s.image} alt="" className="absolute inset-0 w-full h-full object-cover -z-10" aria-hidden/>
+                  <div className="absolute inset-0 -z-10 bg-gradient-to-b from-card/85 via-card/90 to-card/95" aria-hidden/>
+                </>
+              )}
               <div className="text-5xl mb-3">{s.icon}</div>
               <h3 className="text-xl font-semibold">{lang === "es" ? s.name : s.nameEn}</h3>
               <p className="text-sm text-muted-foreground mt-2 flex-1">{lang === "es" ? s.description : s.descriptionEn}</p>
