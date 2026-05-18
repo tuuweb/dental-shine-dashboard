@@ -48,10 +48,7 @@ export function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <span className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-xs font-semibold text-primary-dark uppercase tracking-wider">
-              <Sparkles size={14}/> {t("hero.tag")}
-            </span>
-            <h1 className="mt-6 text-4xl md:text-6xl font-bold leading-tight">
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight">
               <span className="text-foreground">Dr. Diego Pallares</span>
               <br/>
               <span className="text-gradient">{t("hero.title")}</span>
