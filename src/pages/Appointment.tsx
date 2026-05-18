@@ -24,7 +24,7 @@ export function Appointment() {
     e.preventDefault();
     setError("");
     if (!form.name || !form.idNumber || !form.whatsapp || !form.date || !form.time) {
-      setError("Completa todos los campos.");
+      setError(t("appt.fillAll"));
       return;
     }
     const exists = data.appointments.some((a) => a.status !== "rejected" && a.date === form.date && a.time === form.time);
