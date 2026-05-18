@@ -90,8 +90,8 @@ export function Home() {
               <div className="absolute -bottom-2 -right-2 bg-white card-soft px-4 py-3 z-20 flex items-center gap-2">
                 <div className="bg-accent rounded-full p-2 text-primary"><ToothIcon size={20}/></div>
                 <div>
-                  <div className="text-xs text-muted-foreground">Especialista</div>
-                  <div className="text-sm font-semibold">Rehabilitación Oral</div>
+                  <div className="text-xs text-muted-foreground">{t("home.specialist")}</div>
+                  <div className="text-sm font-semibold">{t("home.specialistArea")}</div>
                 </div>
               </div>
               <div className="absolute -top-2 -left-2 bg-white card-soft px-4 py-3 z-20 flex items-center gap-2">
