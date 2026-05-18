@@ -168,6 +168,99 @@ export function Home() {
         </div>
       </section>
 
+      {/* GALLERY PREVIEW */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold">{t("gallery.title")}</h2>
+              <p className="text-muted-foreground mt-2">{t("gallery.subtitle")}</p>
+            </div>
+            <Link to="/galeria" className="text-sm font-semibold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all">
+              {t("cta.viewAll")} <ArrowRight size={16}/>
+            </Link>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              ...data.gallery,
+              ...data.clients.filter(c => c.beforeImage && c.afterImage).map(c => ({ id: c.id, title: c.name, before: c.beforeImage!, after: c.afterImage!, treatment: c.treatment }))
+            ].slice(0, 4).map((g) => (
+              <GalleryPreviewCard key={g.id} item={g} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS MARQUEE */}
+      <section className="py-20 bg-accent/30 overflow-hidden">
+        <div className="mx-auto max-w-7xl px-4 mb-10 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold">{t("testimonials.title")}</h2>
+          <p className="text-muted-foreground mt-2">Lo que dicen nuestros pacientes</p>
+        </div>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-accent/60 to-transparent z-10 pointer-events-none"/>
+          <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-accent/60 to-transparent z-10 pointer-events-none"/>
+          <div className="flex gap-6 marquee-track">
+            {[...data.testimonials, ...data.testimonials, ...data.testimonials].map((tt, i) => (
+              <div key={i} className="card-soft p-6 w-[320px] md:w-[380px] shrink-0 relative">
+                <Quote className="absolute top-4 right-4 text-primary/20" size={32}/>
+                <div className="flex gap-1 mb-3 text-yellow-500">
+                  {Array.from({ length: tt.rating }).map((_, j) => <Star key={j} size={14} fill="currentColor"/>)}
+                </div>
+                <p className="text-sm italic text-foreground line-clamp-4">"{tt.text}"</p>
+                <div className="mt-4 pt-3 border-t border-border">
+                  <div className="font-semibold text-sm">{tt.name}</div>
+                  <div className="text-xs text-muted-foreground">{tt.treatment}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="text-center mt-10">
+          <Link to="/testimonios" className="btn-outline">{t("cta.viewAll")}</Link>
+        </div>
+      </section>
+
+      {/* LOCATION + CONTACT */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-4 grid md:grid-cols-2 gap-10 items-stretch">
+          <div className="card-soft overflow-hidden">
+            <iframe
+              title="Ubicación"
+              className="w-full h-full min-h-[360px] border-0"
+              src="https://www.google.com/maps?q=Cra+43+%23+80-155+Barranquilla&output=embed"
+              loading="lazy"
+            />
+          </div>
+          <div className="card-soft p-8 md:p-10 flex flex-col">
+            <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-primary-dark uppercase tracking-wider w-fit">
+              <MapPin size={13}/> Visítanos
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold mt-4">Estamos en Barranquilla</h2>
+            <p className="text-muted-foreground mt-3">Te esperamos en nuestro consultorio para brindarte la mejor atención odontológica.</p>
+            <div className="mt-6 space-y-3">
+              <a href={MAPS} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
+                <div className="bg-accent text-primary p-2.5 rounded-lg"><MapPin size={18}/></div>
+                <div><div className="text-xs text-muted-foreground">Dirección</div><div className="font-semibold text-sm">{ADDRESS}</div></div>
+              </a>
+              <a href="tel:+573014276409" className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
+                <div className="bg-accent text-primary p-2.5 rounded-lg"><Phone size={18}/></div>
+                <div><div className="text-xs text-muted-foreground">Teléfono</div><div className="font-semibold text-sm">{PHONE_MOBILE}</div></div>
+              </a>
+              <a href={`mailto:${EMAIL}`} className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
+                <div className="bg-accent text-primary p-2.5 rounded-lg"><Mail size={18}/></div>
+                <div><div className="text-xs text-muted-foreground">Email</div><div className="font-semibold text-sm">{EMAIL}</div></div>
+              </a>
+            </div>
+            <div className="mt-auto pt-6 flex flex-wrap gap-3">
+              <Link to="/contacto" className="btn-primary"><Mail size={16}/> {t("cta.contact")}</Link>
+              <Link to="/agendar" className="btn-outline"><Calendar size={16}/> {t("cta.book")}</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
       {/* CTA */}
       <section className="py-20">
         <div className="mx-auto max-w-4xl px-4 text-center card-soft p-10 md:p-16">
