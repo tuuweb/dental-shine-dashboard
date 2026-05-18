@@ -232,22 +232,22 @@ export function Home() {
           </div>
           <div className="card-soft p-8 md:p-10 flex flex-col">
             <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-primary-dark uppercase tracking-wider w-fit">
-              <MapPin size={13}/> Visítanos
+              <MapPin size={13}/> {t("home.visitUs")}
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold mt-4">Estamos en Barranquilla</h2>
-            <p className="text-muted-foreground mt-3">Te esperamos en nuestro consultorio para brindarte la mejor atención odontológica.</p>
+            <h2 className="text-3xl md:text-4xl font-bold mt-4">{t("home.location")}</h2>
+            <p className="text-muted-foreground mt-3">{t("home.locationText")}</p>
             <div className="mt-6 space-y-3">
               <a href={MAPS} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
                 <div className="bg-accent text-primary p-2.5 rounded-lg"><MapPin size={18}/></div>
-                <div><div className="text-xs text-muted-foreground">Dirección</div><div className="font-semibold text-sm">{ADDRESS}</div></div>
+                <div><div className="text-xs text-muted-foreground">{t("contact.address")}</div><div className="font-semibold text-sm">{ADDRESS}</div></div>
               </a>
               <a href="tel:+573014276409" className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
                 <div className="bg-accent text-primary p-2.5 rounded-lg"><Phone size={18}/></div>
-                <div><div className="text-xs text-muted-foreground">Teléfono</div><div className="font-semibold text-sm">{PHONE_MOBILE}</div></div>
+                <div><div className="text-xs text-muted-foreground">{t("contact.phone")}</div><div className="font-semibold text-sm">{PHONE_MOBILE}</div></div>
               </a>
               <a href={`mailto:${EMAIL}`} className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
                 <div className="bg-accent text-primary p-2.5 rounded-lg"><Mail size={18}/></div>
-                <div><div className="text-xs text-muted-foreground">Email</div><div className="font-semibold text-sm">{EMAIL}</div></div>
+                <div><div className="text-xs text-muted-foreground">{t("contact.email")}</div><div className="font-semibold text-sm">{EMAIL}</div></div>
               </a>
             </div>
             <div className="mt-auto pt-6 flex flex-wrap gap-3">
