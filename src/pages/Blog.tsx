@@ -29,7 +29,7 @@ export function Blog() {
               <div className="text-xs text-muted-foreground flex items-center gap-1"><Calendar size={12}/> {p.date}</div>
               <h3 className="text-lg font-semibold mt-2">{p.title}</h3>
               <p className="text-sm text-muted-foreground mt-2">{open === p.id ? p.content : p.excerpt}</p>
-              <button className="text-xs font-semibold text-primary mt-3">{open === p.id ? "Cerrar" : "Leer más →"}</button>
+              <button className="text-xs font-semibold text-primary mt-3">{open === p.id ? t("blog.close") : t("blog.readMore")}</button>
             </motion.article>
           ))}
         </div>

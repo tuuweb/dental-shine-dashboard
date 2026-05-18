@@ -28,14 +28,14 @@ export function About() {
           </div>
           <div className="grid grid-cols-2 gap-4 mt-6">
             {[
-              { icon: <GraduationCap/>, t: "Universidad El Bosque", d: "Odontología" },
-              { icon: <Briefcase/>, t: "12+ años", d: "Práctica clínica" },
-              { icon: <Award/>, t: "Especialista", d: "Rehabilitación oral" },
-              { icon: <Award/>, t: "Certificado", d: "Flowable Injection" },
+              { icon: <GraduationCap/>, title: t("about.uni"), d: t("about.uniDesc") },
+              { icon: <Briefcase/>, title: t("about.years"), d: t("about.yearsDesc") },
+              { icon: <Award/>, title: t("about.specialist"), d: t("about.specialistDesc") },
+              { icon: <Award/>, title: t("about.certified"), d: t("about.certifiedDesc") },
             ].map((c) => (
-              <div key={c.t} className="card-soft p-4">
+              <div key={c.title} className="card-soft p-4">
                 <div className="text-primary mb-1">{c.icon}</div>
-                <div className="font-semibold text-sm">{c.t}</div>
+                <div className="font-semibold text-sm">{c.title}</div>
                 <div className="text-xs text-muted-foreground">{c.d}</div>
               </div>
             ))}

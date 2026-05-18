@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle2, Star, Award, Users, Calendar, Sparkles, Quote, MapPin, Phone, Mail, ArrowRight } from "lucide-react";
+import { CheckCircle2, Star, Award, Users, Calendar, Quote, MapPin, Phone, Mail, ArrowRight } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { useAppData, waLink, EMAIL, PHONE_MOBILE, ADDRESS, MAPS } from "@/contexts/AppDataContext";
 import { ChevronArt } from "@/components/ChevronArt";
@@ -10,20 +10,21 @@ import drDiego from "@/assets/dr-diego.png";
 
 function GalleryPreviewCard({ item }: { item: { title: string; before: string; after: string; treatment: string } }) {
   const [show, setShow] = useState<"before" | "after">("after");
+  const { t } = useI18n();
   return (
     <div className="card-soft overflow-hidden group">
       <div className="aspect-[4/3] relative overflow-hidden bg-muted">
         <img src={show === "before" ? item.before : item.after} alt={item.title} className="w-full h-full object-cover transition-transform group-hover:scale-105"/>
         <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold uppercase tracking-wider">
-          {show === "before" ? "Antes" : "Después"}
+          {show === "before" ? t("common.before") : t("common.after")}
         </span>
       </div>
       <div className="p-4">
         <h3 className="font-semibold text-sm">{item.title}</h3>
         <p className="text-xs text-muted-foreground mt-0.5">{item.treatment}</p>
         <div className="mt-3 flex rounded-full bg-muted p-1 text-[11px]">
-          <button onClick={() => setShow("before")} className={`flex-1 py-1 rounded-full font-medium transition ${show === "before" ? "bg-primary text-primary-foreground" : ""}`}>Antes</button>
-          <button onClick={() => setShow("after")} className={`flex-1 py-1 rounded-full font-medium transition ${show === "after" ? "bg-primary text-primary-foreground" : ""}`}>Después</button>
+          <button onClick={() => setShow("before")} className={`flex-1 py-1 rounded-full font-medium transition ${show === "before" ? "bg-primary text-primary-foreground" : ""}`}>{t("common.before")}</button>
+          <button onClick={() => setShow("after")} className={`flex-1 py-1 rounded-full font-medium transition ${show === "after" ? "bg-primary text-primary-foreground" : ""}`}>{t("common.after")}</button>
         </div>
       </div>
     </div>
@@ -48,10 +49,7 @@ export function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <span className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-xs font-semibold text-primary-dark uppercase tracking-wider">
-              <Sparkles size={14}/> {t("hero.tag")}
-            </span>
-            <h1 className="mt-6 text-4xl md:text-6xl font-bold leading-tight">
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight">
               <span className="text-foreground">Dr. Diego Pallares</span>
               <br/>
               <span className="text-gradient">{t("hero.title")}</span>
@@ -92,8 +90,8 @@ export function Home() {
               <div className="absolute -bottom-2 -right-2 bg-white card-soft px-4 py-3 z-20 flex items-center gap-2">
                 <div className="bg-accent rounded-full p-2 text-primary"><ToothIcon size={20}/></div>
                 <div>
-                  <div className="text-xs text-muted-foreground">Especialista</div>
-                  <div className="text-sm font-semibold">Rehabilitación Oral</div>
+                  <div className="text-xs text-muted-foreground">{t("home.specialist")}</div>
+                  <div className="text-sm font-semibold">{t("home.specialistArea")}</div>
                 </div>
               </div>
               <div className="absolute -top-2 -left-2 bg-white card-soft px-4 py-3 z-20 flex items-center gap-2">
@@ -150,17 +148,17 @@ export function Home() {
           <ChevronArt className="w-full h-full" />
         </div>
         <div className="mx-auto max-w-7xl px-4 relative">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">¿Por qué elegirnos?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">{t("home.whyUs")}</h2>
           <div className="grid md:grid-cols-4 gap-6">
             {[
-              { icon: <Award/>, t: "Experiencia", d: "12+ años transformando sonrisas" },
-              { icon: <Users/>, t: "1500+ pacientes", d: "Satisfechos en Barranquilla" },
-              { icon: <CheckCircle2/>, t: "Tecnología", d: "Equipos de última generación" },
-              { icon: <Star/>, t: "4.9★", d: "Calificación promedio" },
+              { icon: <Award/>, title: t("home.why.experience"), d: t("home.why.experienceText") },
+              { icon: <Users/>, title: t("home.why.patients"), d: t("home.why.patientsText") },
+              { icon: <CheckCircle2/>, title: t("home.why.tech"), d: t("home.why.techText") },
+              { icon: <Star/>, title: "4.9★", d: t("home.why.ratingText") },
             ].map((f) => (
-              <div key={f.t} className="text-center">
+              <div key={f.title} className="text-center">
                 <div className="mx-auto h-14 w-14 rounded-full bg-white/10 grid place-items-center mb-3">{f.icon}</div>
-                <div className="font-semibold">{f.t}</div>
+                <div className="font-semibold">{f.title}</div>
                 <div className="text-sm opacity-80 mt-1">{f.d}</div>
               </div>
             ))}
@@ -195,7 +193,7 @@ export function Home() {
       <section className="py-20 bg-accent/30 overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 mb-10 text-center">
           <h2 className="text-3xl md:text-4xl font-bold">{t("testimonials.title")}</h2>
-          <p className="text-muted-foreground mt-2">Lo que dicen nuestros pacientes</p>
+          <p className="text-muted-foreground mt-2">{t("home.testimonialsSubtitle")}</p>
         </div>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-accent/60 to-transparent z-10 pointer-events-none"/>
@@ -234,22 +232,22 @@ export function Home() {
           </div>
           <div className="card-soft p-8 md:p-10 flex flex-col">
             <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-primary-dark uppercase tracking-wider w-fit">
-              <MapPin size={13}/> Visítanos
+              <MapPin size={13}/> {t("home.visitUs")}
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold mt-4">Estamos en Barranquilla</h2>
-            <p className="text-muted-foreground mt-3">Te esperamos en nuestro consultorio para brindarte la mejor atención odontológica.</p>
+            <h2 className="text-3xl md:text-4xl font-bold mt-4">{t("home.location")}</h2>
+            <p className="text-muted-foreground mt-3">{t("home.locationText")}</p>
             <div className="mt-6 space-y-3">
               <a href={MAPS} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
                 <div className="bg-accent text-primary p-2.5 rounded-lg"><MapPin size={18}/></div>
-                <div><div className="text-xs text-muted-foreground">Dirección</div><div className="font-semibold text-sm">{ADDRESS}</div></div>
+                <div><div className="text-xs text-muted-foreground">{t("contact.address")}</div><div className="font-semibold text-sm">{ADDRESS}</div></div>
               </a>
               <a href="tel:+573014276409" className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
                 <div className="bg-accent text-primary p-2.5 rounded-lg"><Phone size={18}/></div>
-                <div><div className="text-xs text-muted-foreground">Teléfono</div><div className="font-semibold text-sm">{PHONE_MOBILE}</div></div>
+                <div><div className="text-xs text-muted-foreground">{t("contact.phone")}</div><div className="font-semibold text-sm">{PHONE_MOBILE}</div></div>
               </a>
               <a href={`mailto:${EMAIL}`} className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
                 <div className="bg-accent text-primary p-2.5 rounded-lg"><Mail size={18}/></div>
-                <div><div className="text-xs text-muted-foreground">Email</div><div className="font-semibold text-sm">{EMAIL}</div></div>
+                <div><div className="text-xs text-muted-foreground">{t("contact.email")}</div><div className="font-semibold text-sm">{EMAIL}</div></div>
               </a>
             </div>
             <div className="mt-auto pt-6 flex flex-wrap gap-3">
@@ -265,8 +263,8 @@ export function Home() {
       <section className="py-20">
         <div className="mx-auto max-w-4xl px-4 text-center card-soft p-10 md:p-16">
           <ToothIcon size={48} className="text-primary mx-auto mb-4 tooth-bounce"/>
-          <h2 className="text-3xl md:text-4xl font-bold">¿Listo para una nueva sonrisa?</h2>
-          <p className="text-muted-foreground mt-3">Agenda tu valoración hoy mismo y recibe asesoría personalizada.</p>
+          <h2 className="text-3xl md:text-4xl font-bold">{t("home.ctaTitle")}</h2>
+          <p className="text-muted-foreground mt-3">{t("home.ctaText")}</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link to="/agendar" className="btn-primary"><Calendar size={18}/> {t("cta.book")}</Link>
             <Link to="/contacto" className="btn-outline">{t("cta.contact")}</Link>

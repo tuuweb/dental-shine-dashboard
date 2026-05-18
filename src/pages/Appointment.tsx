@@ -24,7 +24,7 @@ export function Appointment() {
     e.preventDefault();
     setError("");
     if (!form.name || !form.idNumber || !form.whatsapp || !form.date || !form.time) {
-      setError("Completa todos los campos.");
+      setError(t("appt.fillAll"));
       return;
     }
     const exists = data.appointments.some((a) => a.status !== "rejected" && a.date === form.date && a.time === form.time);
@@ -52,7 +52,7 @@ export function Appointment() {
         <div className="card-soft p-10">
           <CheckCircle2 className="text-primary mx-auto" size={64}/>
           <h2 className="text-2xl font-bold mt-4">{t("appt.success")}</h2>
-          <p className="text-muted-foreground mt-2">Te confirmaremos por WhatsApp pronto.</p>
+          <p className="text-muted-foreground mt-2">{t("appt.confirmSoon")}</p>
         </div>
       </div>
     );

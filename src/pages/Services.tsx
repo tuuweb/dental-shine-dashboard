@@ -27,7 +27,7 @@ export function Services() {
               <p className="text-sm text-muted-foreground mt-2 flex-1">{lang === "es" ? s.description : s.descriptionEn}</p>
               <div className="mt-5 pt-5 border-t border-border flex items-center justify-between">
                 {s.quoteOnly || s.price === 0 ? (
-                  <span className="text-sm font-semibold text-muted-foreground">Cotización</span>
+                  <span className="text-sm font-semibold text-muted-foreground">{t("common.quote")}</span>
                 ) : (
                   <span className="text-lg font-bold text-primary">${s.price.toLocaleString("es-CO")}</span>
                 )}
