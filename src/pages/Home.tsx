@@ -1,11 +1,34 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle2, Star, Award, Users, Calendar, Sparkles } from "lucide-react";
+import { CheckCircle2, Star, Award, Users, Calendar, Sparkles, Quote, MapPin, Phone, Mail, ArrowRight } from "lucide-react";
 import { useI18n } from "@/i18n";
-import { useAppData, waLink } from "@/contexts/AppDataContext";
+import { useAppData, waLink, EMAIL, PHONE_MOBILE, ADDRESS, MAPS } from "@/contexts/AppDataContext";
 import { ChevronArt } from "@/components/ChevronArt";
 import { ToothIcon } from "@/components/ToothLoader";
 import drDiego from "@/assets/dr-diego.png";
+
+function GalleryPreviewCard({ item }: { item: { title: string; before: string; after: string; treatment: string } }) {
+  const [show, setShow] = useState<"before" | "after">("after");
+  return (
+    <div className="card-soft overflow-hidden group">
+      <div className="aspect-[4/3] relative overflow-hidden bg-muted">
+        <img src={show === "before" ? item.before : item.after} alt={item.title} className="w-full h-full object-cover transition-transform group-hover:scale-105"/>
+        <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold uppercase tracking-wider">
+          {show === "before" ? "Antes" : "Después"}
+        </span>
+      </div>
+      <div className="p-4">
+        <h3 className="font-semibold text-sm">{item.title}</h3>
+        <p className="text-xs text-muted-foreground mt-0.5">{item.treatment}</p>
+        <div className="mt-3 flex rounded-full bg-muted p-1 text-[11px]">
+          <button onClick={() => setShow("before")} className={`flex-1 py-1 rounded-full font-medium transition ${show === "before" ? "bg-primary text-primary-foreground" : ""}`}>Antes</button>
+          <button onClick={() => setShow("after")} className={`flex-1 py-1 rounded-full font-medium transition ${show === "after" ? "bg-primary text-primary-foreground" : ""}`}>Después</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Home() {
   const { t, lang } = useI18n();
