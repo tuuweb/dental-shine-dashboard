@@ -1,11 +1,34 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle2, Star, Award, Users, Calendar, Sparkles } from "lucide-react";
+import { CheckCircle2, Star, Award, Users, Calendar, Sparkles, Quote, MapPin, Phone, Mail, ArrowRight } from "lucide-react";
 import { useI18n } from "@/i18n";
-import { useAppData, waLink } from "@/contexts/AppDataContext";
+import { useAppData, waLink, EMAIL, PHONE_MOBILE, ADDRESS, MAPS } from "@/contexts/AppDataContext";
 import { ChevronArt } from "@/components/ChevronArt";
 import { ToothIcon } from "@/components/ToothLoader";
 import drDiego from "@/assets/dr-diego.png";
+
+function GalleryPreviewCard({ item }: { item: { title: string; before: string; after: string; treatment: string } }) {
+  const [show, setShow] = useState<"before" | "after">("after");
+  return (
+    <div className="card-soft overflow-hidden group">
+      <div className="aspect-[4/3] relative overflow-hidden bg-muted">
+        <img src={show === "before" ? item.before : item.after} alt={item.title} className="w-full h-full object-cover transition-transform group-hover:scale-105"/>
+        <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold uppercase tracking-wider">
+          {show === "before" ? "Antes" : "Después"}
+        </span>
+      </div>
+      <div className="p-4">
+        <h3 className="font-semibold text-sm">{item.title}</h3>
+        <p className="text-xs text-muted-foreground mt-0.5">{item.treatment}</p>
+        <div className="mt-3 flex rounded-full bg-muted p-1 text-[11px]">
+          <button onClick={() => setShow("before")} className={`flex-1 py-1 rounded-full font-medium transition ${show === "before" ? "bg-primary text-primary-foreground" : ""}`}>Antes</button>
+          <button onClick={() => setShow("after")} className={`flex-1 py-1 rounded-full font-medium transition ${show === "after" ? "bg-primary text-primary-foreground" : ""}`}>Después</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Home() {
   const { t, lang } = useI18n();
@@ -144,6 +167,99 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      {/* GALLERY PREVIEW */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold">{t("gallery.title")}</h2>
+              <p className="text-muted-foreground mt-2">{t("gallery.subtitle")}</p>
+            </div>
+            <Link to="/galeria" className="text-sm font-semibold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all">
+              {t("cta.viewAll")} <ArrowRight size={16}/>
+            </Link>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              ...data.gallery,
+              ...data.clients.filter(c => c.beforeImage && c.afterImage).map(c => ({ id: c.id, title: c.name, before: c.beforeImage!, after: c.afterImage!, treatment: c.treatment }))
+            ].slice(0, 4).map((g) => (
+              <GalleryPreviewCard key={g.id} item={g} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS MARQUEE */}
+      <section className="py-20 bg-accent/30 overflow-hidden">
+        <div className="mx-auto max-w-7xl px-4 mb-10 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold">{t("testimonials.title")}</h2>
+          <p className="text-muted-foreground mt-2">Lo que dicen nuestros pacientes</p>
+        </div>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-accent/60 to-transparent z-10 pointer-events-none"/>
+          <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-accent/60 to-transparent z-10 pointer-events-none"/>
+          <div className="flex gap-6 marquee-track">
+            {[...data.testimonials, ...data.testimonials, ...data.testimonials].map((tt, i) => (
+              <div key={i} className="card-soft p-6 w-[320px] md:w-[380px] shrink-0 relative">
+                <Quote className="absolute top-4 right-4 text-primary/20" size={32}/>
+                <div className="flex gap-1 mb-3 text-yellow-500">
+                  {Array.from({ length: tt.rating }).map((_, j) => <Star key={j} size={14} fill="currentColor"/>)}
+                </div>
+                <p className="text-sm italic text-foreground line-clamp-4">"{tt.text}"</p>
+                <div className="mt-4 pt-3 border-t border-border">
+                  <div className="font-semibold text-sm">{tt.name}</div>
+                  <div className="text-xs text-muted-foreground">{tt.treatment}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="text-center mt-10">
+          <Link to="/testimonios" className="btn-outline">{t("cta.viewAll")}</Link>
+        </div>
+      </section>
+
+      {/* LOCATION + CONTACT */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-4 grid md:grid-cols-2 gap-10 items-stretch">
+          <div className="card-soft overflow-hidden">
+            <iframe
+              title="Ubicación"
+              className="w-full h-full min-h-[360px] border-0"
+              src="https://www.google.com/maps?q=Cra+43+%23+80-155+Barranquilla&output=embed"
+              loading="lazy"
+            />
+          </div>
+          <div className="card-soft p-8 md:p-10 flex flex-col">
+            <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-primary-dark uppercase tracking-wider w-fit">
+              <MapPin size={13}/> Visítanos
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold mt-4">Estamos en Barranquilla</h2>
+            <p className="text-muted-foreground mt-3">Te esperamos en nuestro consultorio para brindarte la mejor atención odontológica.</p>
+            <div className="mt-6 space-y-3">
+              <a href={MAPS} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
+                <div className="bg-accent text-primary p-2.5 rounded-lg"><MapPin size={18}/></div>
+                <div><div className="text-xs text-muted-foreground">Dirección</div><div className="font-semibold text-sm">{ADDRESS}</div></div>
+              </a>
+              <a href="tel:+573014276409" className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
+                <div className="bg-accent text-primary p-2.5 rounded-lg"><Phone size={18}/></div>
+                <div><div className="text-xs text-muted-foreground">Teléfono</div><div className="font-semibold text-sm">{PHONE_MOBILE}</div></div>
+              </a>
+              <a href={`mailto:${EMAIL}`} className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition">
+                <div className="bg-accent text-primary p-2.5 rounded-lg"><Mail size={18}/></div>
+                <div><div className="text-xs text-muted-foreground">Email</div><div className="font-semibold text-sm">{EMAIL}</div></div>
+              </a>
+            </div>
+            <div className="mt-auto pt-6 flex flex-wrap gap-3">
+              <Link to="/contacto" className="btn-primary"><Mail size={16}/> {t("cta.contact")}</Link>
+              <Link to="/agendar" className="btn-outline"><Calendar size={16}/> {t("cta.book")}</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
 
       {/* CTA */}
       <section className="py-20">
