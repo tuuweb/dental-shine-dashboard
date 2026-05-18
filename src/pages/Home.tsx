@@ -148,17 +148,17 @@ export function Home() {
           <ChevronArt className="w-full h-full" />
         </div>
         <div className="mx-auto max-w-7xl px-4 relative">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">¿Por qué elegirnos?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">{t("home.whyUs")}</h2>
           <div className="grid md:grid-cols-4 gap-6">
             {[
-              { icon: <Award/>, t: "Experiencia", d: "12+ años transformando sonrisas" },
-              { icon: <Users/>, t: "1500+ pacientes", d: "Satisfechos en Barranquilla" },
-              { icon: <CheckCircle2/>, t: "Tecnología", d: "Equipos de última generación" },
-              { icon: <Star/>, t: "4.9★", d: "Calificación promedio" },
+              { icon: <Award/>, title: t("home.why.experience"), d: t("home.why.experienceText") },
+              { icon: <Users/>, title: t("home.why.patients"), d: t("home.why.patientsText") },
+              { icon: <CheckCircle2/>, title: t("home.why.tech"), d: t("home.why.techText") },
+              { icon: <Star/>, title: "4.9★", d: t("home.why.ratingText") },
             ].map((f) => (
-              <div key={f.t} className="text-center">
+              <div key={f.title} className="text-center">
                 <div className="mx-auto h-14 w-14 rounded-full bg-white/10 grid place-items-center mb-3">{f.icon}</div>
-                <div className="font-semibold">{f.t}</div>
+                <div className="font-semibold">{f.title}</div>
                 <div className="text-sm opacity-80 mt-1">{f.d}</div>
               </div>
             ))}
