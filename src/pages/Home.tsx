@@ -94,13 +94,6 @@ export function Home() {
                   <div className="text-sm font-semibold">{t("home.specialistArea")}</div>
                 </div>
               </div>
-              <div className="absolute -top-2 -left-2 bg-white card-soft px-4 py-3 z-20 flex items-center gap-2">
-                <Award className="text-primary" size={22}/>
-                <div>
-                  <div className="text-xs text-muted-foreground">{t("stats.rating")}</div>
-                  <div className="text-sm font-semibold">4.9 / 5.0</div>
-                </div>
-              </div>
             </div>
           </motion.div>
         </div>
