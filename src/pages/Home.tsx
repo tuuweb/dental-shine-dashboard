@@ -193,7 +193,7 @@ export function Home() {
       <section className="py-20 bg-accent/30 overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 mb-10 text-center">
           <h2 className="text-3xl md:text-4xl font-bold">{t("testimonials.title")}</h2>
-          <p className="text-muted-foreground mt-2">Lo que dicen nuestros pacientes</p>
+          <p className="text-muted-foreground mt-2">{t("home.testimonialsSubtitle")}</p>
         </div>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-accent/60 to-transparent z-10 pointer-events-none"/>
