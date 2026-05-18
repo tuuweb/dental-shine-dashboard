@@ -235,6 +235,9 @@ function ServicesPanel() {
               <label className="block text-sm font-medium mb-1">Description (EN)</label>
               <textarea value={edit.descriptionEn} onChange={(e) => setEdit({ ...edit, descriptionEn: e.target.value })} rows={2} className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm"/>
             </div>
+            <div className="md:col-span-2">
+              <FileIn label="Imagen de fondo (opcional)" preview={edit.image} onFile={(f) => { const r = new FileReader(); r.onload = () => setEdit({ ...edit, image: r.result as string }); r.readAsDataURL(f); }} onClear={() => setEdit({ ...edit, image: undefined })}/>
+            </div>
             <label className="md:col-span-2 flex items-center gap-2 text-sm">
               <input type="checkbox" checked={!!edit.quoteOnly} onChange={(e) => setEdit({ ...edit, quoteOnly: e.target.checked })}/>
               Solo cotización por WhatsApp (sin precio fijo)

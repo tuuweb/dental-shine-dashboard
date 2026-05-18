@@ -21,6 +21,7 @@ export interface Service {
   price: number;
   icon: string;
   quoteOnly?: boolean;
+  image?: string;
 }
 
 export interface GalleryItem {
