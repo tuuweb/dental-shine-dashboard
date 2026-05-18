@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SpaApp } from "@/spa-app";
 
+// SpaApp is rendered by __root so this route just needs to exist.
 export const Route = createFileRoute("/")({
-  component: SpaApp,
+  component: () => null,
 });

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SpaApp } from "@/spa-app";
 
-// Catch-all so BrowserRouter (react-router-dom) handles all client navigation.
+// Catch-all so deep links (e.g. /servicios) match a TanStack route.
+// SpaApp is mounted in __root, so we just need this to exist.
 export const Route = createFileRoute("/$")({
-  component: SpaApp,
+  component: () => null,
 });

@@ -1,5 +1,6 @@
-import { Outlet, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
+import { SpaApp } from "@/spa-app";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -30,7 +31,8 @@ export const Route = createRootRoute({
     ],
   }),
   shellComponent: RootShell,
-  component: () => <Outlet />,
+  // Render SpaApp at the root so the BrowserRouter persists across all TanStack matches.
+  component: SpaApp,
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
