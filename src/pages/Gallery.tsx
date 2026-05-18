@@ -21,7 +21,7 @@ export function Gallery() {
           <p className="text-muted-foreground mt-3">{t("gallery.subtitle")}</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.length === 0 && <p className="text-muted-foreground text-center col-span-full">Próximamente más casos.</p>}
+          {items.length === 0 && <p className="text-muted-foreground text-center col-span-full">{t("gallery.empty")}</p>}
           {items.map((g, i) => (
             <GalleryCard key={g.id} item={g} delay={i * 0.05} />
           ))}
