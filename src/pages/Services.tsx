@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useI18n } from "@/i18n";
 import { useAppData, waLink } from "@/contexts/AppDataContext";
+import { ToothIcon } from "@/components/ToothLoader";
 
 export function Services() {
   const { t, lang } = useI18n();
