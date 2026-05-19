@@ -41,8 +41,11 @@ export function SpaApp() {
               <Route path="/agendar" element={<Appointment />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
-            <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin-pallares" element={<AdminLogin />} />
+            <Route path="/admin-pallares/dashboard" element={<AdminDashboard />} />
+            {/* legacy redirects */}
+            <Route path="/admin" element={<Navigate to="/admin-pallares" replace />} />
+            <Route path="/admin/dashboard" element={<Navigate to="/admin-pallares/dashboard" replace />} />
           </Routes>
         </BrowserRouter>
       </AppDataProvider>
