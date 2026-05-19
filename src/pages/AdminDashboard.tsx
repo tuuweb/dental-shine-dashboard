@@ -351,9 +351,13 @@ function TestimonialsPanel() {
             <In label="Nombre" v={edit.name} on={(v) => setEdit({ ...edit, name: v })}/>
             <In label="Tratamiento" v={edit.treatment} on={(v) => setEdit({ ...edit, treatment: v })}/>
             <In label="Rating (1-5)" type="number" v={String(edit.rating)} on={(v) => setEdit({ ...edit, rating: Math.min(5, Math.max(1, Number(v) || 5)) })}/>
+            <In label="Link de Instagram (Reel/Post)" v={edit.instagramUrl || ""} on={(v) => setEdit({ ...edit, instagramUrl: v })}/>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1">Texto</label>
-              <textarea value={edit.text} onChange={(e) => setEdit({ ...edit, text: e.target.value })} rows={3} className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm"/>
+              <FileIn label="Miniatura del video (recomendado vertical 9:16)" preview={edit.thumbnail} onFile={(f) => { const r = new FileReader(); r.onload = () => setEdit({ ...edit, thumbnail: r.result as string }); r.readAsDataURL(f); }} onClear={() => setEdit({ ...edit, thumbnail: undefined })}/>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium mb-1">Texto (opcional, para SEO)</label>
+              <textarea value={edit.text} onChange={(e) => setEdit({ ...edit, text: e.target.value })} rows={2} className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm"/>
             </div>
           </div>
           <div className="flex gap-2 mt-5 justify-end">
