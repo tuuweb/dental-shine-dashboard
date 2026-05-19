@@ -193,7 +193,7 @@ export function Home() {
           <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-accent/60 to-transparent z-10 pointer-events-none"/>
           <div className="flex gap-6 marquee-track">
             {[...data.testimonials, ...data.testimonials, ...data.testimonials].map((tt, i) => (
-              <div key={i} className="card-soft p-6 w-[320px] md:w-[380px] shrink-0 relative">
+              <div key={i} className="card-soft p-4 md:p-6 w-[46vw] sm:w-[280px] md:w-[380px] shrink-0 relative">
                 <Quote className="absolute top-4 right-4 text-primary/20" size={32}/>
                 <div className="flex gap-1 mb-3 text-yellow-500">
                   {Array.from({ length: tt.rating }).map((_, j) => <Star key={j} size={14} fill="currentColor"/>)}
