@@ -159,10 +159,16 @@ export function Home() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              ...data.gallery,
+              ...data.gallery.filter(g => g.featuredOnHome !== false),
               ...data.clients.filter(c => c.beforeImage && c.afterImage).map(c => ({ id: c.id, title: c.name, before: c.beforeImage!, after: c.afterImage!, treatment: c.treatment }))
             ].slice(0, 4).map((g) => (
-              <GalleryPreviewCard key={g.id} item={g} />
+              <div key={g.id} className="card-soft overflow-hidden">
+                <BeforeAfterSlider before={g.before} after={g.after} alt={g.title} className="aspect-[4/3] bg-muted"/>
+                <div className="p-3">
+                  <h3 className="font-semibold text-sm truncate">{g.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">{g.treatment}</p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
