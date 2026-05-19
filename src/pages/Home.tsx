@@ -92,8 +92,16 @@ export function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="card-soft p-6 group hover:-translate-y-1 transition-transform"
+                className="card-soft p-6 group hover:-translate-y-1 transition-transform relative overflow-hidden isolate"
               >
+                {s.image ? (
+                  <>
+                    <img src={s.image} alt="" className="absolute inset-0 w-full h-full object-cover -z-10" aria-hidden/>
+                    <div className="absolute inset-0 -z-10 bg-gradient-to-b from-card/85 via-card/90 to-card/95" aria-hidden/>
+                  </>
+                ) : (
+                  <ToothIcon size={220} className="absolute -right-10 -bottom-10 text-primary/5 -z-10 rotate-12" aria-hidden/>
+                )}
                 <div className="text-4xl mb-3">{s.icon}</div>
                 <h3 className="text-lg font-semibold">{lang === "es" ? s.name : s.nameEn}</h3>
                 <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{lang === "es" ? s.description : s.descriptionEn}</p>
