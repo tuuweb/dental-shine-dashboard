@@ -43,13 +43,6 @@ export interface Testimonial {
   instagramUrl?: string;
   thumbnail?: string;
 }
-  id: string;
-  name: string;
-  rating: number;
-  text: string;
-  treatment: string;
-  avatar?: string;
-}
 
 export interface BlogPost {
   id: string;
