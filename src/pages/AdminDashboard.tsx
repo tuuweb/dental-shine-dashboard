@@ -295,6 +295,10 @@ function GalleryPanel() {
             <In label="Tratamiento" v={edit.treatment} on={(v) => setEdit({ ...edit, treatment: v })}/>
             <FileIn label="Antes" preview={edit.before} onFile={(f) => { const r = new FileReader(); r.onload = () => setEdit({ ...edit, before: r.result as string }); r.readAsDataURL(f); }} onClear={() => setEdit({ ...edit, before: "" })}/>
             <FileIn label="Después" preview={edit.after} onFile={(f) => { const r = new FileReader(); r.onload = () => setEdit({ ...edit, after: r.result as string }); r.readAsDataURL(f); }} onClear={() => setEdit({ ...edit, after: "" })}/>
+            <label className="md:col-span-2 flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={edit.featuredOnHome !== false} onChange={(e) => setEdit({ ...edit, featuredOnHome: e.target.checked })}/>
+              Mostrar este antes/después en la página principal
+            </label>
           </div>
           <div className="flex gap-2 mt-5 justify-end">
             <button onClick={() => setEdit(null)} className="btn-outline text-sm">Cancelar</button>
