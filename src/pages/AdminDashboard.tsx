@@ -10,7 +10,7 @@ type Tab = "appointments" | "clients" | "services" | "gallery" | "testimonials";
 export function AdminDashboard() {
   const nav = useNavigate();
   const [tab, setTab] = useState<Tab>("appointments");
-  useEffect(() => { if (!isAdminAuthed()) nav("/admin"); }, [nav]);
+  useEffect(() => { if (!isAdminAuthed()) nav("/admin-pallares"); }, [nav]);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "appointments", label: "Citas", icon: <Calendar size={16}/> },
@@ -28,7 +28,7 @@ export function AdminDashboard() {
             <div className="bg-primary text-primary-foreground p-2 rounded-lg"><ToothIcon size={18}/></div>
             <span className="font-semibold">Admin · Diego Pallares</span>
           </Link>
-          <button onClick={() => { adminLogout(); nav("/admin"); }} className="text-sm text-muted-foreground hover:text-destructive flex items-center gap-1.5">
+          <button onClick={() => { adminLogout(); nav("/admin-pallares"); }} className="text-sm text-muted-foreground hover:text-destructive flex items-center gap-1.5">
             <LogOut size={16}/> Salir
           </button>
         </div>
