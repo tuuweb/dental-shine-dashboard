@@ -30,6 +30,7 @@ export interface GalleryItem {
   before: string;
   after: string;
   treatment: string;
+  featuredOnHome?: boolean;
 }
 
 export interface Testimonial {
@@ -39,6 +40,8 @@ export interface Testimonial {
   text: string;
   treatment: string;
   avatar?: string;
+  instagramUrl?: string;
+  thumbnail?: string;
 }
 
 export interface BlogPost {

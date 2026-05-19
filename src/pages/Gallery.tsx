@@ -1,7 +1,7 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { useI18n } from "@/i18n";
 import { useAppData } from "@/contexts/AppDataContext";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 
 export function Gallery() {
   const { t } = useI18n();
@@ -23,39 +23,23 @@ export function Gallery() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.length === 0 && <p className="text-muted-foreground text-center col-span-full">{t("gallery.empty")}</p>}
           {items.map((g, i) => (
-            <GalleryCard key={g.id} item={g} delay={i * 0.05} />
+            <motion.div
+              key={g.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+              className="card-soft overflow-hidden"
+            >
+              <BeforeAfterSlider before={g.before} after={g.after} alt={g.title} className="aspect-[4/3] bg-muted"/>
+              <div className="p-4">
+                <h3 className="font-semibold">{g.title}</h3>
+                <p className="text-xs text-muted-foreground mt-1">{g.treatment}</p>
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>
     </div>
-  );
-}
-
-function GalleryCard({ item, delay }: { item: { title: string; before: string; after: string; treatment: string }; delay: number }) {
-  const [show, setShow] = useState<"before" | "after">("after");
-  const { t } = useI18n();
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay }}
-      className="card-soft overflow-hidden"
-    >
-      <div className="aspect-[4/3] relative overflow-hidden bg-muted">
-        <img src={show === "before" ? item.before : item.after} alt={`${item.title} ${show}`} className="w-full h-full object-cover transition-opacity" />
-        <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold uppercase">
-          {show === "before" ? t("common.before") : t("common.after")}
-        </span>
-      </div>
-      <div className="p-4">
-        <h3 className="font-semibold">{item.title}</h3>
-        <p className="text-xs text-muted-foreground mt-1">{item.treatment}</p>
-        <div className="mt-3 flex rounded-full bg-muted p-1 text-xs">
-          <button onClick={() => setShow("before")} className={`flex-1 py-1.5 rounded-full font-medium ${show === "before" ? "bg-primary text-primary-foreground" : ""}`}>{t("common.before")}</button>
-          <button onClick={() => setShow("after")} className={`flex-1 py-1.5 rounded-full font-medium ${show === "after" ? "bg-primary text-primary-foreground" : ""}`}>{t("common.after")}</button>
-        </div>
-      </div>
-    </motion.div>
   );
 }

@@ -10,7 +10,7 @@ type Tab = "appointments" | "clients" | "services" | "gallery" | "testimonials";
 export function AdminDashboard() {
   const nav = useNavigate();
   const [tab, setTab] = useState<Tab>("appointments");
-  useEffect(() => { if (!isAdminAuthed()) nav("/admin"); }, [nav]);
+  useEffect(() => { if (!isAdminAuthed()) nav("/admin-pallares"); }, [nav]);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "appointments", label: "Citas", icon: <Calendar size={16}/> },
@@ -28,7 +28,7 @@ export function AdminDashboard() {
             <div className="bg-primary text-primary-foreground p-2 rounded-lg"><ToothIcon size={18}/></div>
             <span className="font-semibold">Admin · Diego Pallares</span>
           </Link>
-          <button onClick={() => { adminLogout(); nav("/admin"); }} className="text-sm text-muted-foreground hover:text-destructive flex items-center gap-1.5">
+          <button onClick={() => { adminLogout(); nav("/admin-pallares"); }} className="text-sm text-muted-foreground hover:text-destructive flex items-center gap-1.5">
             <LogOut size={16}/> Salir
           </button>
         </div>
@@ -295,6 +295,10 @@ function GalleryPanel() {
             <In label="Tratamiento" v={edit.treatment} on={(v) => setEdit({ ...edit, treatment: v })}/>
             <FileIn label="Antes" preview={edit.before} onFile={(f) => { const r = new FileReader(); r.onload = () => setEdit({ ...edit, before: r.result as string }); r.readAsDataURL(f); }} onClear={() => setEdit({ ...edit, before: "" })}/>
             <FileIn label="Después" preview={edit.after} onFile={(f) => { const r = new FileReader(); r.onload = () => setEdit({ ...edit, after: r.result as string }); r.readAsDataURL(f); }} onClear={() => setEdit({ ...edit, after: "" })}/>
+            <label className="md:col-span-2 flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={edit.featuredOnHome !== false} onChange={(e) => setEdit({ ...edit, featuredOnHome: e.target.checked })}/>
+              Mostrar este antes/después en la página principal
+            </label>
           </div>
           <div className="flex gap-2 mt-5 justify-end">
             <button onClick={() => setEdit(null)} className="btn-outline text-sm">Cancelar</button>
@@ -347,9 +351,13 @@ function TestimonialsPanel() {
             <In label="Nombre" v={edit.name} on={(v) => setEdit({ ...edit, name: v })}/>
             <In label="Tratamiento" v={edit.treatment} on={(v) => setEdit({ ...edit, treatment: v })}/>
             <In label="Rating (1-5)" type="number" v={String(edit.rating)} on={(v) => setEdit({ ...edit, rating: Math.min(5, Math.max(1, Number(v) || 5)) })}/>
+            <In label="Link de Instagram (Reel/Post)" v={edit.instagramUrl || ""} on={(v) => setEdit({ ...edit, instagramUrl: v })}/>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1">Texto</label>
-              <textarea value={edit.text} onChange={(e) => setEdit({ ...edit, text: e.target.value })} rows={3} className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm"/>
+              <FileIn label="Miniatura del video (recomendado vertical 9:16)" preview={edit.thumbnail} onFile={(f) => { const r = new FileReader(); r.onload = () => setEdit({ ...edit, thumbnail: r.result as string }); r.readAsDataURL(f); }} onClear={() => setEdit({ ...edit, thumbnail: undefined })}/>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium mb-1">Texto (opcional, para SEO)</label>
+              <textarea value={edit.text} onChange={(e) => setEdit({ ...edit, text: e.target.value })} rows={2} className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm"/>
             </div>
           </div>
           <div className="flex gap-2 mt-5 justify-end">

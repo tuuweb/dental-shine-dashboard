@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Lock } from "lucide-react";
 import { ToothIcon } from "@/components/ToothLoader";
 
-const ADMIN_PASSWORD = "tuweb.com";
+const ADMIN_PASSWORD = "pallaresweb123";
 const SESSION_KEY = "dp-admin-session";
 
 export function isAdminAuthed() {
@@ -20,13 +20,13 @@ export function AdminLogin() {
   const [error, setError] = useState("");
   const nav = useNavigate();
 
-  useEffect(() => { if (isAdminAuthed()) nav("/admin/dashboard"); }, [nav]);
+  useEffect(() => { if (isAdminAuthed()) nav("/admin-pallares/dashboard"); }, [nav]);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
       localStorage.setItem(SESSION_KEY, "1");
-      nav("/admin/dashboard");
+      nav("/admin-pallares/dashboard");
     } else {
       setError("Contraseña incorrecta");
     }

@@ -1,35 +1,13 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle2, Star, Award, Users, Calendar, Quote, MapPin, Phone, Mail, ArrowRight } from "lucide-react";
+import { CheckCircle2, Star, Award, Users, Calendar, MapPin, Phone, Mail, ArrowRight, Play, Instagram } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { useAppData, waLink, EMAIL, PHONE_MOBILE, ADDRESS, MAPS } from "@/contexts/AppDataContext";
 import { ChevronArt } from "@/components/ChevronArt";
 import { ToothIcon } from "@/components/ToothLoader";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import drDiego from "@/assets/dr-diego.png";
 
-function GalleryPreviewCard({ item }: { item: { title: string; before: string; after: string; treatment: string } }) {
-  const [show, setShow] = useState<"before" | "after">("after");
-  const { t } = useI18n();
-  return (
-    <div className="card-soft overflow-hidden group">
-      <div className="aspect-[4/3] relative overflow-hidden bg-muted">
-        <img src={show === "before" ? item.before : item.after} alt={item.title} className="w-full h-full object-cover transition-transform group-hover:scale-105"/>
-        <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold uppercase tracking-wider">
-          {show === "before" ? t("common.before") : t("common.after")}
-        </span>
-      </div>
-      <div className="p-4">
-        <h3 className="font-semibold text-sm">{item.title}</h3>
-        <p className="text-xs text-muted-foreground mt-0.5">{item.treatment}</p>
-        <div className="mt-3 flex rounded-full bg-muted p-1 text-[11px]">
-          <button onClick={() => setShow("before")} className={`flex-1 py-1 rounded-full font-medium transition ${show === "before" ? "bg-primary text-primary-foreground" : ""}`}>{t("common.before")}</button>
-          <button onClick={() => setShow("after")} className={`flex-1 py-1 rounded-full font-medium transition ${show === "after" ? "bg-primary text-primary-foreground" : ""}`}>{t("common.after")}</button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function Home() {
   const { t, lang } = useI18n();
@@ -114,8 +92,16 @@ export function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="card-soft p-6 group hover:-translate-y-1 transition-transform"
+                className="card-soft p-6 group hover:-translate-y-1 transition-transform relative overflow-hidden isolate"
               >
+                {s.image ? (
+                  <>
+                    <img src={s.image} alt="" className="absolute inset-0 w-full h-full object-cover -z-10" aria-hidden/>
+                    <div className="absolute inset-0 -z-10 bg-gradient-to-b from-card/85 via-card/90 to-card/95" aria-hidden/>
+                  </>
+                ) : (
+                  <ToothIcon size={220} className="absolute -right-10 -bottom-10 text-primary/5 -z-10 rotate-12" aria-hidden/>
+                )}
                 <div className="text-4xl mb-3">{s.icon}</div>
                 <h3 className="text-lg font-semibold">{lang === "es" ? s.name : s.nameEn}</h3>
                 <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{lang === "es" ? s.description : s.descriptionEn}</p>
@@ -173,10 +159,16 @@ export function Home() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              ...data.gallery,
+              ...data.gallery.filter(g => g.featuredOnHome !== false),
               ...data.clients.filter(c => c.beforeImage && c.afterImage).map(c => ({ id: c.id, title: c.name, before: c.beforeImage!, after: c.afterImage!, treatment: c.treatment }))
             ].slice(0, 4).map((g) => (
-              <GalleryPreviewCard key={g.id} item={g} />
+              <div key={g.id} className="card-soft overflow-hidden">
+                <BeforeAfterSlider before={g.before} after={g.after} alt={g.title} className="aspect-[4/3] bg-muted"/>
+                <div className="p-3">
+                  <h3 className="font-semibold text-sm truncate">{g.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">{g.treatment}</p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -191,20 +183,43 @@ export function Home() {
         <div className="relative">
           <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-accent/60 to-transparent z-10 pointer-events-none"/>
           <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-accent/60 to-transparent z-10 pointer-events-none"/>
-          <div className="flex gap-6 marquee-track">
-            {[...data.testimonials, ...data.testimonials, ...data.testimonials].map((tt, i) => (
-              <div key={i} className="card-soft p-4 md:p-6 w-[46vw] sm:w-[280px] md:w-[380px] shrink-0 relative">
-                <Quote className="absolute top-4 right-4 text-primary/20" size={32}/>
-                <div className="flex gap-1 mb-3 text-yellow-500">
-                  {Array.from({ length: tt.rating }).map((_, j) => <Star key={j} size={14} fill="currentColor"/>)}
-                </div>
-                <p className="text-sm italic text-foreground line-clamp-4">"{tt.text}"</p>
-                <div className="mt-4 pt-3 border-t border-border">
-                  <div className="font-semibold text-sm">{tt.name}</div>
-                  <div className="text-xs text-muted-foreground">{tt.treatment}</div>
-                </div>
-              </div>
-            ))}
+          <div className="flex gap-4 md:gap-6 marquee-track">
+            {[...data.testimonials, ...data.testimonials, ...data.testimonials].map((tt, i) => {
+              const href = tt.instagramUrl || "#";
+              const isLink = !!tt.instagramUrl;
+              return (
+                <a
+                  key={i}
+                  href={href}
+                  target={isLink ? "_blank" : undefined}
+                  rel={isLink ? "noreferrer" : undefined}
+                  onClick={(e) => { if (!isLink) e.preventDefault(); }}
+                  className="group relative shrink-0 w-[44vw] sm:w-[230px] md:w-[280px] aspect-[9/16] rounded-2xl overflow-hidden card-soft block"
+                >
+                  {tt.thumbnail ? (
+                    <img src={tt.thumbnail} alt={tt.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-primary-light/20 to-accent grid place-items-center">
+                      <ToothIcon size={80} className="text-primary/40"/>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"/>
+                  <div className="absolute top-3 right-3 bg-white/95 text-primary p-1.5 rounded-full">
+                    <Instagram size={14}/>
+                  </div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-14 w-14 rounded-full bg-white/95 grid place-items-center shadow-xl group-hover:scale-110 transition-transform">
+                    <Play size={22} className="text-primary ml-0.5" fill="currentColor"/>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
+                    <div className="flex gap-0.5 mb-1 text-yellow-400">
+                      {Array.from({ length: tt.rating }).map((_, j) => <Star key={j} size={11} fill="currentColor"/>)}
+                    </div>
+                    <div className="font-semibold text-sm leading-tight">{tt.name}</div>
+                    <div className="text-[11px] opacity-80">{tt.treatment}</div>
+                  </div>
+                </a>
+              );
+            })}
           </div>
         </div>
         <div className="text-center mt-10">
