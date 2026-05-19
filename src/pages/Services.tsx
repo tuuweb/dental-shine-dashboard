@@ -23,11 +23,13 @@ export function Services() {
               transition={{ delay: i * 0.05 }}
               className="card-soft p-6 flex flex-col relative overflow-hidden isolate"
             >
-              {s.image && (
+              {s.image ? (
                 <>
                   <img src={s.image} alt="" className="absolute inset-0 w-full h-full object-cover -z-10" aria-hidden/>
                   <div className="absolute inset-0 -z-10 bg-gradient-to-b from-card/85 via-card/90 to-card/95" aria-hidden/>
                 </>
+              ) : (
+                <ToothIcon size={260} className="absolute -right-12 -bottom-12 text-primary/5 -z-10 rotate-12" aria-hidden/>
               )}
               <div className="text-5xl mb-3">{s.icon}</div>
               <h3 className="text-xl font-semibold">{lang === "es" ? s.name : s.nameEn}</h3>
