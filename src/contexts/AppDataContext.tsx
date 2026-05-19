@@ -30,9 +30,19 @@ export interface GalleryItem {
   before: string;
   after: string;
   treatment: string;
+  featuredOnHome?: boolean;
 }
 
 export interface Testimonial {
+  id: string;
+  name: string;
+  rating: number;
+  text: string;
+  treatment: string;
+  avatar?: string;
+  instagramUrl?: string;
+  thumbnail?: string;
+}
   id: string;
   name: string;
   rating: number;
