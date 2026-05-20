@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { supabase, APP_DATA_ID } from "@/lib/supabase";
 
 export interface Client {
   id: string;
