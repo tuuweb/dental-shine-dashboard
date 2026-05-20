@@ -57,7 +57,7 @@ export interface BlogPost {
 export interface Appointment {
   id: string;
   name: string;
-  idNumber: string;
+  idNumber?: string;
   whatsapp: string;
   service: string;
   date: string; // YYYY-MM-DD
@@ -73,6 +73,9 @@ export interface SiteImage {
   url: string;
   section: string;
 }
+
+// Horarios disponibles por día de la semana (0 = domingo ... 6 = sábado)
+export type Schedule = Record<number, string[]>;
 
 interface AppData {
   clients: Client[];
