@@ -57,7 +57,7 @@ export interface BlogPost {
 export interface Appointment {
   id: string;
   name: string;
-  idNumber: string;
+  idNumber?: string;
   whatsapp: string;
   service: string;
   date: string; // YYYY-MM-DD
@@ -74,6 +74,9 @@ export interface SiteImage {
   section: string;
 }
 
+// Horarios disponibles por día de la semana (0 = domingo ... 6 = sábado)
+export type Schedule = Record<number, string[]>;
+
 interface AppData {
   clients: Client[];
   services: Service[];
@@ -82,9 +85,20 @@ interface AppData {
   blog: BlogPost[];
   appointments: Appointment[];
   images: SiteImage[];
+  schedule: Schedule;
 }
 
 const STORAGE_KEY = "dp-data-v1";
+
+const defaultSchedule: Schedule = {
+  0: [], // Domingo
+  1: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"],
+  2: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"],
+  3: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"],
+  4: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"],
+  5: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"],
+  6: ["09:00", "10:00", "11:00"], // Sábado
+};
 
 const defaultData: AppData = {
   clients: [],
@@ -113,6 +127,7 @@ const defaultData: AppData = {
   ],
   appointments: [],
   images: [],
+  schedule: defaultSchedule,
 };
 
 interface Ctx {
