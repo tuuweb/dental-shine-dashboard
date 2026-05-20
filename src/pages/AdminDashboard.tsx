@@ -55,8 +55,12 @@ export function AdminDashboard() {
 }
 
 /* ============ APPOINTMENTS ============ */
+const WEEKDAYS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
 function AppointmentsPanel() {
   const { data, set } = useAppData();
+  const [showNew, setShowNew] = useState(false);
+  const [showSchedule, setShowSchedule] = useState(false);
   const sorted = [...data.appointments].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
   const pending = sorted.filter((a) => a.status === "pending");
   const accepted = sorted.filter((a) => a.status === "accepted");
@@ -66,9 +70,14 @@ function AppointmentsPanel() {
     set("appointments", data.appointments.map((a) => a.id === id ? { ...a, status } : a));
   };
   const remove = (id: string) => set("appointments", data.appointments.filter((a) => a.id !== id));
+  const create = (a: Appointment) => { set("appointments", [...data.appointments, a]); setShowNew(false); };
 
   return (
     <div className="space-y-6">
+      <div className="flex flex-wrap gap-2 justify-end">
+        <button onClick={() => setShowSchedule(true)} className="btn-outline text-sm"><Clock size={16}/> Horarios disponibles</button>
+        <button onClick={() => setShowNew(true)} className="btn-primary text-sm"><Plus size={16}/> Nueva cita manual</button>
+      </div>
       <Section title={`Pendientes (${pending.length})`}>
         {pending.length === 0 ? <Empty/> : pending.map((a) => <ApptRow key={a.id} a={a} onAccept={() => update(a.id, "accepted")} onReject={() => update(a.id, "rejected")} onDelete={() => remove(a.id)} />)}
       </Section>
@@ -78,28 +87,46 @@ function AppointmentsPanel() {
       <Section title={`Rechazadas (${rejected.length})`}>
         {rejected.length === 0 ? <Empty/> : rejected.map((a) => <ApptRow key={a.id} a={a} onDelete={() => remove(a.id)} />)}
       </Section>
+      {showNew && <NewAppointmentModal onClose={() => setShowNew(false)} onCreate={create}/>}
+      {showSchedule && <ScheduleModal onClose={() => setShowSchedule(false)}/>}
     </div>
   );
 }
 
+function buildWaText(a: Appointment) {
+  const lines = [
+    `Hola ${a.name} 👋`,
+    ``,
+    `Te escribo de parte del Dr. Diego Pallares sobre tu cita:`,
+    `• Servicio: ${a.service}`,
+    `• Fecha: ${a.date}`,
+    `• Hora: ${a.time}`,
+  ];
+  if (a.notes) lines.push(`• Notas: ${a.notes}`);
+  lines.push(``, `¿Nos confirmas tu cita? 🦷✨`);
+  return lines.join("\n");
+}
+
 function ApptRow({ a, onAccept, onReject, onDelete, accepted }: { a: Appointment; onAccept?: () => void; onReject?: () => void; onDelete: () => void; accepted?: boolean }) {
-  const waText = `Hola ${a.name}, te confirmo tu cita para el ${a.date} a las ${a.time} para ${a.service}. ¿Quieres confirmar tu cita?`;
   const phone = a.whatsapp.replace(/\D/g, "");
+  const waHref = waLink(buildWaText(a), phone);
   return (
     <div className="card-soft p-4 flex flex-wrap items-center justify-between gap-3">
       <div className="flex-1 min-w-[240px]">
-        <div className="font-semibold">{a.name} <span className="text-xs text-muted-foreground font-normal">· CC {a.idNumber}</span></div>
+        <div className="font-semibold">{a.name}{a.idNumber ? <span className="text-xs text-muted-foreground font-normal"> · CC {a.idNumber}</span> : null}</div>
         <div className="text-sm text-muted-foreground">{a.service}</div>
-        <div className="text-xs mt-1 flex gap-3 flex-wrap">
+        <div className="text-xs mt-1 flex gap-3 flex-wrap items-center">
           <span className="font-medium text-primary">{a.date} {a.time}</span>
-          <span>📱 {a.whatsapp}</span>
+          <a href={waHref} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[#128C7E] hover:underline font-medium">
+            <MessageCircle size={12}/> {a.whatsapp}
+          </a>
         </div>
         {a.notes && <div className="text-xs text-muted-foreground mt-1 italic">"{a.notes}"</div>}
       </div>
       <div className="flex gap-1.5">
         {accepted && (
-          <a href={waLink(waText, phone)} target="_blank" rel="noreferrer" className="btn-primary text-xs !py-1.5 !px-3">
-            <MessageCircle size={14}/> WhatsApp
+          <a href={waHref} target="_blank" rel="noreferrer" className="btn-primary text-xs !py-1.5 !px-3">
+            <MessageCircle size={14}/> Confirmar
           </a>
         )}
         {onAccept && <button onClick={onAccept} className="p-2 rounded-lg bg-green-500/10 text-green-600 hover:bg-green-500/20"><Check size={16}/></button>}
@@ -107,6 +134,89 @@ function ApptRow({ a, onAccept, onReject, onDelete, accepted }: { a: Appointment
         <button onClick={onDelete} className="p-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20"><Trash2 size={16}/></button>
       </div>
     </div>
+  );
+}
+
+function NewAppointmentModal({ onClose, onCreate }: { onClose: () => void; onCreate: (a: Appointment) => void }) {
+  const { data } = useAppData();
+  const [f, setF] = useState({ name: "", whatsapp: "", service: data.services[0]?.name ?? "", date: "", time: "", notes: "", status: "accepted" as Appointment["status"] });
+  const submit = () => {
+    if (!f.name || !f.whatsapp || !f.date || !f.time) return;
+    onCreate({
+      id: crypto.randomUUID(),
+      name: f.name, whatsapp: f.whatsapp, service: f.service,
+      date: f.date, time: f.time, notes: f.notes,
+      status: f.status, createdAt: Date.now(),
+    });
+  };
+  return (
+    <Modal onClose={onClose}>
+      <h3 className="text-lg font-bold mb-4">Nueva cita manual</h3>
+      <div className="grid md:grid-cols-2 gap-3">
+        <In label="Nombre" v={f.name} on={(v) => setF({ ...f, name: v })}/>
+        <In label="WhatsApp" v={f.whatsapp} on={(v) => setF({ ...f, whatsapp: v })}/>
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium mb-1">Servicio</label>
+          <select value={f.service} onChange={(e) => setF({ ...f, service: e.target.value })} className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm">
+            {data.services.map((s) => <option key={s.id} value={s.name}>{s.name}</option>)}
+          </select>
+        </div>
+        <In label="Fecha" type="date" v={f.date} on={(v) => setF({ ...f, date: v })}/>
+        <In label="Hora (HH:MM)" v={f.time} on={(v) => setF({ ...f, time: v })}/>
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium mb-1">Estado</label>
+          <select value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as Appointment["status"] })} className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm">
+            <option value="accepted">Aceptada</option>
+            <option value="pending">Pendiente</option>
+          </select>
+        </div>
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium mb-1">Notas</label>
+          <textarea value={f.notes} onChange={(e) => setF({ ...f, notes: e.target.value })} rows={2} className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm"/>
+        </div>
+      </div>
+      <div className="flex gap-2 mt-5 justify-end">
+        <button onClick={onClose} className="btn-outline text-sm">Cancelar</button>
+        <button onClick={submit} className="btn-primary text-sm"><Save size={14}/> Guardar</button>
+      </div>
+    </Modal>
+  );
+}
+
+function ScheduleModal({ onClose }: { onClose: () => void }) {
+  const { data, set } = useAppData();
+  const [draft, setDraft] = useState<Record<number, string>>(() => {
+    const out: Record<number, string> = {};
+    for (let i = 0; i < 7; i++) out[i] = (data.schedule?.[i] ?? []).join(", ");
+    return out;
+  });
+  const save = () => {
+    const parsed: Record<number, string[]> = {};
+    for (let i = 0; i < 7; i++) {
+      parsed[i] = draft[i].split(",").map((s) => s.trim()).filter((s) => /^\d{1,2}:\d{2}$/.test(s)).map((s) => {
+        const [h, m] = s.split(":"); return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+      });
+    }
+    set("schedule", parsed);
+    onClose();
+  };
+  return (
+    <Modal onClose={onClose}>
+      <h3 className="text-lg font-bold mb-2">Horarios disponibles</h3>
+      <p className="text-xs text-muted-foreground mb-4">Escribe las horas separadas por coma (ej: <code>09:00, 10:00, 14:30</code>). Deja vacío si ese día no atiendes.</p>
+      <div className="space-y-3">
+        {WEEKDAYS.map((day, i) => (
+          <div key={i}>
+            <label className="block text-sm font-medium mb-1">{day}</label>
+            <input value={draft[i]} onChange={(e) => setDraft({ ...draft, [i]: e.target.value })} placeholder="09:00, 10:00, 11:00..." className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm"/>
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-2 mt-5 justify-end">
+        <button onClick={onClose} className="btn-outline text-sm">Cancelar</button>
+        <button onClick={save} className="btn-primary text-sm"><Save size={14}/> Guardar</button>
+      </div>
+    </Modal>
   );
 }
 
