@@ -85,9 +85,20 @@ interface AppData {
   blog: BlogPost[];
   appointments: Appointment[];
   images: SiteImage[];
+  schedule: Schedule;
 }
 
 const STORAGE_KEY = "dp-data-v1";
+
+const defaultSchedule: Schedule = {
+  0: [], // Domingo
+  1: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"],
+  2: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"],
+  3: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"],
+  4: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"],
+  5: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"],
+  6: ["09:00", "10:00", "11:00"], // Sábado
+};
 
 const defaultData: AppData = {
   clients: [],
