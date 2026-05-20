@@ -3,14 +3,15 @@ import { Calendar, Clock, CheckCircle2 } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { useAppData, type Appointment } from "@/contexts/AppDataContext";
 
-const TIMES = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"];
-
 export function Appointment() {
   const { t, lang } = useI18n();
   const { data, set } = useAppData();
-  const [form, setForm] = useState({ name: "", idNumber: "", whatsapp: "", service: data.services[0]?.id ?? "", date: "", time: "", notes: "" });
+  const [form, setForm] = useState({ name: "", whatsapp: "", service: data.services[0]?.id ?? "", date: "", time: "", notes: "" });
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  const weekday = form.date ? new Date(form.date + "T12:00:00").getDay() : -1;
+  const slotsForDay = weekday >= 0 ? (data.schedule?.[weekday] ?? []) : [];
 
   const takenSlots = useMemo(() => {
     return new Set(
@@ -23,7 +24,7 @@ export function Appointment() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!form.name || !form.idNumber || !form.whatsapp || !form.date || !form.time) {
+    if (!form.name || !form.whatsapp || !form.date || !form.time) {
       setError(t("appt.fillAll"));
       return;
     }
@@ -33,7 +34,6 @@ export function Appointment() {
     const appt: Appointment = {
       id: crypto.randomUUID(),
       name: form.name,
-      idNumber: form.idNumber,
       whatsapp: form.whatsapp,
       service: data.services.find((s) => s.id === form.service)?.name ?? form.service,
       date: form.date,
@@ -67,9 +67,8 @@ export function Appointment() {
         </div>
         <form onSubmit={submit} className="card-soft p-6 md:p-8 grid md:grid-cols-2 gap-4">
           <Field label={t("appt.fullname")} value={form.name} onChange={(v) => setForm({ ...form, name: v })} />
-          <Field label={t("appt.idnum")} value={form.idNumber} onChange={(v) => setForm({ ...form, idNumber: v })} />
           <Field label={t("appt.whatsapp")} value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} placeholder="+57 300 0000000" />
-          <div>
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1">{t("appt.service")}</label>
             <select value={form.service} onChange={(e) => setForm({ ...form, service: e.target.value })} className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm">
               {data.services.map((s) => <option key={s.id} value={s.id}>{lang === "es" ? s.name : s.nameEn}</option>)}
@@ -77,19 +76,25 @@ export function Appointment() {
           </div>
           <Field label={t("appt.date")} type="date" value={form.date} onChange={(v) => setForm({ ...form, date: v, time: "" })} min={new Date().toISOString().slice(0, 10)} />
           <div>
-            <label className="block text-sm font-medium mb-1 flex items-center gap-1"><Clock size={14}/> {t("appt.time")}</label>
-            <div className="grid grid-cols-4 gap-1.5">
-              {TIMES.map((h) => {
-                const disabled = takenSlots.has(h);
-                const active = form.time === h;
-                return (
-                  <button type="button" key={h} disabled={disabled} onClick={() => setForm({ ...form, time: h })}
-                    className={`text-xs py-2 rounded-lg font-medium ${active ? "bg-primary text-primary-foreground" : disabled ? "bg-muted text-muted-foreground line-through cursor-not-allowed" : "border border-border hover:bg-accent"}`}>
-                    {h}
-                  </button>
-                );
-              })}
-            </div>
+            <label className="text-sm font-medium mb-1 flex items-center gap-1"><Clock size={14}/> {t("appt.time")}</label>
+            {!form.date ? (
+              <p className="text-xs text-muted-foreground py-2">Selecciona primero una fecha.</p>
+            ) : slotsForDay.length === 0 ? (
+              <p className="text-xs text-muted-foreground py-2">No hay horarios disponibles ese día.</p>
+            ) : (
+              <div className="grid grid-cols-4 gap-1.5">
+                {slotsForDay.map((h) => {
+                  const disabled = takenSlots.has(h);
+                  const active = form.time === h;
+                  return (
+                    <button type="button" key={h} disabled={disabled} onClick={() => setForm({ ...form, time: h })}
+                      className={`text-xs py-2 rounded-lg font-medium ${active ? "bg-primary text-primary-foreground" : disabled ? "bg-muted text-muted-foreground line-through cursor-not-allowed" : "border border-border hover:bg-accent"}`}>
+                      {h}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1">{t("appt.notes")}</label>
