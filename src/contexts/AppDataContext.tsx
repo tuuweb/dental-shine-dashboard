@@ -125,19 +125,42 @@ const Ctx = createContext<Ctx | null>(null);
 
 export function AppDataProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AppData>(defaultData);
+  const loadedRef = useRef(false);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Carga inicial: primero caché local (instantáneo), luego Supabase (autoritativo)
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        setData({ ...defaultData, ...parsed });
-      }
+      if (raw) setData({ ...defaultData, ...JSON.parse(raw) });
     } catch {}
+
+    (async () => {
+      const { data: row, error } = await supabase
+        .from("app_data")
+        .select("data")
+        .eq("id", APP_DATA_ID)
+        .maybeSingle();
+      if (!error && row?.data) {
+        setData({ ...defaultData, ...(row.data as Partial<AppData>) });
+      }
+      loadedRef.current = true;
+    })();
   }, []);
 
+  // Guardado con debounce: localStorage al instante + Supabase (upsert)
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    if (!loadedRef.current) return;
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      supabase
+        .from("app_data")
+        .upsert({ id: APP_DATA_ID, data, updated_at: new Date().toISOString() })
+        .then(({ error }) => {
+          if (error) console.error("Supabase save error:", error.message);
+        });
+    }, 600);
   }, [data]);
 
   const set = <K extends keyof AppData>(k: K, v: AppData[K]) =>
