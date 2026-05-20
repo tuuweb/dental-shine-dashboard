@@ -127,6 +127,7 @@ const defaultData: AppData = {
   ],
   appointments: [],
   images: [],
+  schedule: defaultSchedule,
 };
 
 interface Ctx {
