@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, Users, Briefcase, Image as ImageIcon, MessageSquare, Calendar, Trash2, Check, X, Plus, Edit3, Save, MessageCircle } from "lucide-react";
+import { LogOut, Users, Briefcase, Image as ImageIcon, MessageSquare, Calendar, Clock, Trash2, Check, X, Plus, Edit3, Save, MessageCircle } from "lucide-react";
 import { isAdminAuthed, adminLogout } from "./AdminLogin";
 import { useAppData, waLink, type Client, type Service, type GalleryItem, type Testimonial, type Appointment } from "@/contexts/AppDataContext";
 import { ToothIcon } from "@/components/ToothLoader";
