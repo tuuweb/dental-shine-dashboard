@@ -6,6 +6,7 @@ import { Layout } from "@/components/Layout";
 import { Home } from "@/pages/Home";
 import { About } from "@/pages/About";
 import { Services } from "@/pages/Services";
+import { ServiceDetail } from "@/pages/ServiceDetail";
 import { Gallery } from "@/pages/Gallery";
 import { Testimonials } from "@/pages/Testimonials";
 import { Blog } from "@/pages/Blog";
@@ -34,6 +35,7 @@ export function SpaApp() {
               <Route path="/" element={<Home />} />
               <Route path="/sobre-mi" element={<About />} />
               <Route path="/servicios" element={<Services />} />
+              <Route path="/servicios/:id" element={<ServiceDetail />} />
               <Route path="/galeria" element={<Gallery />} />
               <Route path="/testimonios" element={<Testimonials />} />
               <Route path="/blog" element={<Blog />} />
