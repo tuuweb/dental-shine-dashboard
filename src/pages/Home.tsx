@@ -5,30 +5,33 @@ import { useI18n } from "@/i18n";
 import { useAppData, waLink, EMAIL, PHONE_MOBILE, ADDRESS, MAPS } from "@/contexts/AppDataContext";
 import { ChevronArt } from "@/components/ChevronArt";
 import { ToothIcon } from "@/components/ToothLoader";
-import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import drDiego from "@/assets/dr-diego.png";
-
 
 export function Home() {
   const { t, lang } = useI18n();
   const { data } = useAppData();
+  const d = data.doctorInfo;
+  const approvedTestimonials = data.testimonials.filter((tt) => (tt.status ?? "approved") === "approved");
+  const galleryItems = data.gallery.slice(0, 4);
+  const showBA = data.showBeforeAfterOnHome !== false;
 
   return (
     <div>
       {/* HERO */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/40" />
+        {/* Watermark logo */}
+        <div className="absolute inset-0 -z-10 grid place-items-center pointer-events-none">
+          <ToothIcon size={900} className="text-primary/[0.04] -rotate-12" />
         </div>
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-background via-background to-accent/40" />
         <ChevronArt className="chevron-corner hidden md:block" />
         <div className="mx-auto max-w-7xl px-4 pt-12 pb-20 md:pt-20 md:pb-28 grid md:grid-cols-2 gap-10 items-center relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-              <span className="text-foreground">Dr. Diego Pallares</span>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+            <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-primary bg-accent px-3 py-1.5 rounded-full">
+              {d.specialty} · {d.yearsExperience} años de experiencia
+            </span>
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight mt-4">
+              <span className="text-foreground">{d.name}</span>
               <br/>
               <span className="text-gradient">{t("hero.title")}</span>
             </h1>
@@ -40,7 +43,7 @@ export function Home() {
             <div className="mt-10 grid grid-cols-3 gap-6 max-w-md">
               {[
                 { n: "1500+", l: t("stats.patients") },
-                { n: "12+", l: t("stats.years") },
+                { n: `${d.yearsExperience}`, l: t("stats.years") },
                 { n: "4.9★", l: t("stats.rating") },
               ].map((s) => (
                 <div key={s.l}>
@@ -51,25 +54,16 @@ export function Home() {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative"
-          >
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative">
             <div className="relative aspect-square max-w-md mx-auto">
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary-light/30 to-primary/20 blur-3xl" />
               <div className="absolute inset-4 rounded-full bg-gradient-to-br from-primary to-primary-dark" />
-              <img
-                src={drDiego}
-                alt="Dr. Diego Pallares"
-                className="relative z-10 w-full h-full object-contain object-bottom float-soft"
-              />
+              <img src={drDiego} alt={d.name} className="relative z-10 w-full h-full object-contain object-bottom float-soft"/>
               <div className="absolute -bottom-2 -right-2 bg-white card-soft px-4 py-3 z-20 flex items-center gap-2">
                 <div className="bg-accent rounded-full p-2 text-primary"><ToothIcon size={20}/></div>
                 <div>
-                  <div className="text-xs text-muted-foreground">{t("home.specialist")}</div>
-                  <div className="text-sm font-semibold">{t("home.specialistArea")}</div>
+                  <div className="text-xs text-muted-foreground">Especialista</div>
+                  <div className="text-sm font-semibold">{d.role}</div>
                 </div>
               </div>
             </div>
@@ -85,35 +79,35 @@ export function Home() {
             <p className="text-muted-foreground mt-2">{t("services.subtitle")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data.services.slice(0, 6).map((s, i) => (
-              <motion.div
-                key={s.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="card-soft p-6 group hover:-translate-y-1 transition-transform relative overflow-hidden isolate"
-              >
-                {s.image ? (
-                  <>
-                    <img src={s.image} alt="" className="absolute inset-0 w-full h-full object-cover -z-10" aria-hidden/>
-                    <div className="absolute inset-0 -z-10 bg-gradient-to-b from-card/85 via-card/90 to-card/95" aria-hidden/>
-                  </>
-                ) : (
-                  <ToothIcon size={220} className="absolute -right-10 -bottom-10 text-primary/5 -z-10 rotate-12" aria-hidden/>
-                )}
-                <div className="text-4xl mb-3">{s.icon}</div>
-                <h3 className="text-lg font-semibold">{lang === "es" ? s.name : s.nameEn}</h3>
-                <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{lang === "es" ? s.description : s.descriptionEn}</p>
-                <div className="mt-4 flex items-center justify-between">
-                  {s.quoteOnly || s.price === 0 ? (
-                    <a href={waLink(`Hola, quiero cotizar ${s.name}`)} target="_blank" rel="noreferrer" className="text-sm font-semibold text-primary">{t("cta.quote")} →</a>
-                  ) : (
-                    <span className="text-sm font-bold text-primary">{t("common.from")} ${s.price.toLocaleString("es-CO")}</span>
-                  )}
-                </div>
-              </motion.div>
-            ))}
+            {data.services.slice(0, 6).map((s, i) => {
+              const cat = data.serviceCategories.find((c) => c.id === s.categoryId);
+              return (
+                <motion.div key={s.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
+                  className="card-soft overflow-hidden group flex flex-col hover:-translate-y-1 transition-transform">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary/10 to-accent">
+                    {s.image ? (
+                      <img src={s.image} alt={s.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+                    ) : (
+                      <ToothIcon size={140} className="absolute inset-0 m-auto text-primary/20"/>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"/>
+                    {cat && <span className="absolute top-3 left-3 bg-white/95 text-primary text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full">{lang === "es" ? cat.name : cat.nameEn}</span>}
+                  </div>
+                  <div className="p-5 flex-1 flex flex-col">
+                    <div className="flex items-center gap-2"><span className="text-2xl">{s.icon}</span><h3 className="text-lg font-semibold">{lang === "es" ? s.name : s.nameEn}</h3></div>
+                    <p className="text-sm text-muted-foreground mt-2 line-clamp-2 flex-1">{lang === "es" ? s.description : s.descriptionEn}</p>
+                    <div className="mt-4 flex items-center justify-between">
+                      {s.quoteOnly || s.price === 0 ? (
+                        <a href={waLink(`Hola, quiero cotizar ${s.name}`)} target="_blank" rel="noreferrer" className="text-sm font-semibold text-primary">{t("cta.quote")} →</a>
+                      ) : (
+                        <span className="text-sm font-bold text-primary">{t("common.from")} ${s.price.toLocaleString("es-CO")}</span>
+                      )}
+                      <Link to={`/servicios/${s.id}`} className="text-xs font-semibold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all">Ver más <ArrowRight size={12}/></Link>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
           <div className="text-center mt-10">
             <Link to="/servicios" className="btn-outline">{t("cta.viewAll")}</Link>
@@ -123,22 +117,20 @@ export function Home() {
 
       {/* WHY US */}
       <section className="py-20 bg-primary-dark text-primary-foreground relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <ChevronArt className="w-full h-full" />
-        </div>
+        <div className="absolute inset-0 opacity-10"><ChevronArt className="w-full h-full"/></div>
         <div className="mx-auto max-w-7xl px-4 relative">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">{t("home.whyUs")}</h2>
           <div className="grid md:grid-cols-4 gap-6">
             {[
-              { icon: <Award/>, title: t("home.why.experience"), d: t("home.why.experienceText") },
-              { icon: <Users/>, title: t("home.why.patients"), d: t("home.why.patientsText") },
-              { icon: <CheckCircle2/>, title: t("home.why.tech"), d: t("home.why.techText") },
-              { icon: <Star/>, title: "4.9★", d: t("home.why.ratingText") },
+              { icon: <Award/>, title: `${d.yearsExperience} años`, desc: "Transformando sonrisas" },
+              { icon: <Users/>, title: "1500+ pacientes", desc: "Satisfechos en Barranquilla" },
+              { icon: <CheckCircle2/>, title: "Tecnología", desc: "Equipos de última generación" },
+              { icon: <Star/>, title: "4.9★", desc: "Calificación promedio" },
             ].map((f) => (
               <div key={f.title} className="text-center">
                 <div className="mx-auto h-14 w-14 rounded-full bg-white/10 grid place-items-center mb-3">{f.icon}</div>
                 <div className="font-semibold">{f.title}</div>
-                <div className="text-sm opacity-80 mt-1">{f.d}</div>
+                <div className="text-sm opacity-80 mt-1">{f.desc}</div>
               </div>
             ))}
           </div>
@@ -146,33 +138,36 @@ export function Home() {
       </section>
 
       {/* GALLERY PREVIEW */}
-      <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold">{t("gallery.title")}</h2>
-              <p className="text-muted-foreground mt-2">{t("gallery.subtitle")}</p>
-            </div>
-            <Link to="/galeria" className="text-sm font-semibold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all">
-              {t("cta.viewAll")} <ArrowRight size={16}/>
-            </Link>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              ...data.gallery.filter(g => g.featuredOnHome !== false),
-              ...data.clients.filter(c => c.beforeImage && c.afterImage).map(c => ({ id: c.id, title: c.name, before: c.beforeImage!, after: c.afterImage!, treatment: c.treatment }))
-            ].slice(0, 4).map((g) => (
-              <div key={g.id} className="card-soft overflow-hidden">
-                <BeforeAfterSlider before={g.before} after={g.after} alt={g.title} className="aspect-[4/3] bg-muted"/>
-                <div className="p-3">
-                  <h3 className="font-semibold text-sm truncate">{g.title}</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">{g.treatment}</p>
-                </div>
+      {showBA && galleryItems.length > 0 && (
+        <section className="py-20">
+          <div className="mx-auto max-w-7xl px-4">
+            <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold">{t("gallery.title")}</h2>
+                <p className="text-muted-foreground mt-2">{t("gallery.subtitle")}</p>
               </div>
-            ))}
+              <Link to="/galeria" className="text-sm font-semibold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all">{t("cta.viewAll")} <ArrowRight size={16}/></Link>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {galleryItems.map((g) => (
+                <div key={g.id} className="card-soft overflow-hidden group">
+                  <div className="relative aspect-[4/3] bg-muted overflow-hidden">
+                    {g.image || g.before ? (
+                      <img src={(g.image || g.before)!} alt={g.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+                    ) : (
+                      <ToothIcon size={80} className="absolute inset-0 m-auto text-primary/30"/>
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <h3 className="font-semibold text-sm truncate">{g.title}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">{g.treatment}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* TESTIMONIALS MARQUEE */}
       <section className="py-20 bg-accent/30 overflow-hidden">
@@ -184,32 +179,28 @@ export function Home() {
           <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-accent/60 to-transparent z-10 pointer-events-none"/>
           <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-accent/60 to-transparent z-10 pointer-events-none"/>
           <div className="flex gap-4 md:gap-6 marquee-track">
-            {[...data.testimonials, ...data.testimonials, ...data.testimonials].map((tt, i) => {
+            {[...approvedTestimonials, ...approvedTestimonials, ...approvedTestimonials].map((tt, i) => {
               const href = tt.instagramUrl || "#";
               const isLink = !!tt.instagramUrl;
               return (
-                <a
-                  key={i}
-                  href={href}
-                  target={isLink ? "_blank" : undefined}
-                  rel={isLink ? "noreferrer" : undefined}
-                  onClick={(e) => { if (!isLink) e.preventDefault(); }}
-                  className="group relative shrink-0 w-[44vw] sm:w-[230px] md:w-[280px] aspect-[9/16] rounded-2xl overflow-hidden card-soft block"
-                >
+                <a key={i} href={href} target={isLink ? "_blank" : undefined} rel={isLink ? "noreferrer" : undefined} onClick={(e) => { if (!isLink) e.preventDefault(); }}
+                  className="group relative shrink-0 w-[44vw] sm:w-[230px] md:w-[280px] aspect-[9/16] rounded-2xl overflow-hidden card-soft block">
                   {tt.thumbnail ? (
-                    <img src={tt.thumbnail} alt={tt.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+                    <img src={tt.thumbnail} alt={tt.name} className="absolute inset-0 w-full h-full object-cover"/>
+                  ) : tt.avatar ? (
+                    <img src={tt.avatar} alt={tt.name} className="absolute inset-0 w-full h-full object-cover"/>
                   ) : (
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-primary-light/20 to-accent grid place-items-center">
                       <ToothIcon size={80} className="text-primary/40"/>
                     </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"/>
-                  <div className="absolute top-3 right-3 bg-white/95 text-primary p-1.5 rounded-full">
-                    <Instagram size={14}/>
-                  </div>
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-14 w-14 rounded-full bg-white/95 grid place-items-center shadow-xl group-hover:scale-110 transition-transform">
-                    <Play size={22} className="text-primary ml-0.5" fill="currentColor"/>
-                  </div>
+                  {tt.instagramUrl && <div className="absolute top-3 right-3 bg-white/95 text-primary p-1.5 rounded-full"><Instagram size={14}/></div>}
+                  {tt.instagramUrl && (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-14 w-14 rounded-full bg-white/95 grid place-items-center shadow-xl">
+                      <Play size={22} className="text-primary ml-0.5" fill="currentColor"/>
+                    </div>
+                  )}
                   <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
                     <div className="flex gap-0.5 mb-1 text-yellow-400">
                       {Array.from({ length: tt.rating }).map((_, j) => <Star key={j} size={11} fill="currentColor"/>)}
@@ -222,21 +213,14 @@ export function Home() {
             })}
           </div>
         </div>
-        <div className="text-center mt-10">
-          <Link to="/testimonios" className="btn-outline">{t("cta.viewAll")}</Link>
-        </div>
+        <div className="text-center mt-10"><Link to="/testimonios" className="btn-outline">{t("cta.viewAll")}</Link></div>
       </section>
 
-      {/* LOCATION + CONTACT */}
+      {/* LOCATION */}
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 grid md:grid-cols-2 gap-10 items-stretch">
           <div className="card-soft overflow-hidden">
-            <iframe
-              title="Ubicación"
-              className="w-full h-full min-h-[360px] border-0"
-              src="https://www.google.com/maps?q=Cra+43+%23+80-155+Barranquilla&output=embed"
-              loading="lazy"
-            />
+            <iframe title="Ubicación" className="w-full h-full min-h-[360px] border-0" src="https://www.google.com/maps?q=Cra+43+%23+80-155+Barranquilla&output=embed" loading="lazy"/>
           </div>
           <div className="card-soft p-8 md:p-10 flex flex-col">
             <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-primary-dark uppercase tracking-wider w-fit">
@@ -265,7 +249,6 @@ export function Home() {
           </div>
         </div>
       </section>
-
 
       {/* CTA */}
       <section className="py-20">
