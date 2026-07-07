@@ -206,6 +206,7 @@ const defaultData: AppData = {
   images: [],
   schedule: defaultSchedule,
   doctorInfo: defaultDoctorInfo,
+  appointmentPrice: 50000,
   showBeforeAfterOnHome: true,
 };
 
