@@ -26,8 +26,7 @@ export function WatermarkBackground() {
           <div key={i} className="flex items-center justify-center">
             <ToothIcon
               size={110}
-              className="text-primary"
-              style={{ opacity: 0.07 }}
+              className="text-primary opacity-[0.07]"
             />
           </div>
         ))}
