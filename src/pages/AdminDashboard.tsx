@@ -696,8 +696,10 @@ function DoctorPanel() {
   const { data, set } = useAppData();
   const [d, setD] = useState<DoctorInfo>(data.doctorInfo);
   const [certsRaw, setCertsRaw] = useState(d.certifications.join("\n"));
+  const [price, setPrice] = useState<number>(data.appointmentPrice ?? 50000);
   const save = () => {
     set("doctorInfo", { ...d, certifications: certsRaw.split("\n").map((s) => s.trim()).filter(Boolean) });
+    set("appointmentPrice", Number.isFinite(price) && price >= 0 ? price : 50000);
   };
   return (
     <div className="card-soft p-6 max-w-3xl mx-auto">
@@ -729,6 +731,19 @@ function DoctorPanel() {
         <In label="WhatsApp" v={d.whatsapp} on={(v) => setD({ ...d, whatsapp: v })}/>
         <In label="Email" v={d.email} on={(v) => setD({ ...d, email: v })}/>
         <In label="Dirección" v={d.address} on={(v) => setD({ ...d, address: v })}/>
+        <div className="md:col-span-2 border-t border-border pt-4 mt-2">
+          <h4 className="text-sm font-bold mb-2">Ajustes de citas</h4>
+          <label className="block text-sm font-medium mb-1">Valor de la consulta (COP)</label>
+          <input
+            type="number"
+            min={0}
+            step={1000}
+            value={price}
+            onChange={(e) => setPrice(Number(e.target.value))}
+            className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <p className="text-[11px] text-muted-foreground mt-1">Se muestra en la página de agendar cita. Ej: 50000 → $50.000</p>
+        </div>
       </div>
       <div className="flex justify-end mt-5">
         <button onClick={save} className="btn-primary text-sm"><Save size={14}/> Guardar cambios</button>
