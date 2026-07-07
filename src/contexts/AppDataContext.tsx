@@ -129,6 +129,7 @@ interface AppData {
   images: SiteImage[];
   schedule: Schedule;
   doctorInfo: DoctorInfo;
+  appointmentPrice: number;
   showBeforeAfterOnHome: boolean;
 }
 
