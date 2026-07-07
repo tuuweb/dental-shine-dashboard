@@ -129,6 +129,7 @@ interface AppData {
   images: SiteImage[];
   schedule: Schedule;
   doctorInfo: DoctorInfo;
+  appointmentPrice: number;
   showBeforeAfterOnHome: boolean;
 }
 
@@ -205,6 +206,7 @@ const defaultData: AppData = {
   images: [],
   schedule: defaultSchedule,
   doctorInfo: defaultDoctorInfo,
+  appointmentPrice: 50000,
   showBeforeAfterOnHome: true,
 };
 
