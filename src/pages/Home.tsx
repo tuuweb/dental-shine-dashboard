@@ -1,3 +1,4 @@
+import { WatermarkBackground } from "@/components/WatermarkBackground";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CheckCircle2, Star, Award, Users, Calendar, MapPin, Phone, Mail, ArrowRight, Play, Instagram } from "lucide-react";
@@ -16,13 +17,10 @@ export function Home() {
   const showBA = data.showBeforeAfterOnHome !== false;
 
   return (
-    <div>
+    <div className="relative">
+      <WatermarkBackground />
       {/* HERO */}
       <section className="relative overflow-hidden">
-        {/* Watermark logo */}
-        <div className="absolute inset-0 -z-10 grid place-items-center pointer-events-none">
-          <ToothIcon size={900} className="text-primary/[0.04] -rotate-12" />
-        </div>
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-background via-background to-accent/40" />
         <ChevronArt className="chevron-corner hidden md:block" />
         <div className="mx-auto max-w-7xl px-4 pt-12 pb-20 md:pt-20 md:pb-28 grid md:grid-cols-2 gap-10 items-center relative">
