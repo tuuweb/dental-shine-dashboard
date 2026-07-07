@@ -114,10 +114,16 @@ export function Appointment() {
             </select>
           </div>
           <div className="text-right">
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Inversión</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Valor consulta</div>
             <div className="text-2xl font-bold text-primary mt-0.5">
-              {!service || service.quoteOnly || service.price === 0 ? "Cotización" : `Desde $${service.price.toLocaleString("es-CO")}`}
+              ${(data.appointmentPrice ?? 50000).toLocaleString("es-CO")}
             </div>
+            {service && !service.quoteOnly && service.price > 0 && (
+              <div className="text-[11px] text-muted-foreground mt-0.5">Tratamiento desde ${service.price.toLocaleString("es-CO")}</div>
+            )}
+            {service?.quoteOnly && (
+              <div className="text-[11px] text-muted-foreground mt-0.5">Tratamiento: cotización</div>
+            )}
           </div>
         </div>
 
