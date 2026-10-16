@@ -253,7 +253,12 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    // Caché local opcional: si no cabe (QuotaExceededError) se ignora; nunca debe romper la página.
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch {
+      try { localStorage.removeItem(STORAGE_KEY); } catch {}
+    }
     if (!loadedRef.current) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
@@ -265,7 +270,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   }, [data]);
 
   const set = <K extends keyof AppData>(k: K, v: AppData[K]) => setData((d) => ({ ...d, [k]: v }));
-  const reset = () => { localStorage.removeItem(STORAGE_KEY); setData(defaultData); };
+  const reset = () => { try { localStorage.removeItem(STORAGE_KEY); } catch {} setData(defaultData); };
 
   return <Ctx.Provider value={{ data, set, reset }}>{children}</Ctx.Provider>;
 }

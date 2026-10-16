@@ -4,6 +4,7 @@ import { LogOut, Users, Briefcase, Image as ImageIcon, MessageSquare, Calendar, 
 import { isAdminAuthed, adminLogout } from "./AdminLogin";
 import { useAppData, waLink, type Client, type Service, type ServiceCategory, type GalleryItem, type GalleryCategory, type Testimonial, type Appointment, type BlogPost, type DoctorInfo } from "@/contexts/AppDataContext";
 import { ToothIcon } from "@/components/ToothLoader";
+import { compressImage } from "@/lib/image";
 
 type Tab = "appointments" | "clients" | "services" | "categories" | "gallery" | "testimonials" | "blog" | "doctor";
 
@@ -754,9 +755,10 @@ function DoctorPanel() {
 
 /* ============ UI helpers ============ */
 function readFile(file: File, cb: (dataUrl: string) => void) {
-  const r = new FileReader();
-  r.onload = () => cb(r.result as string);
-  r.readAsDataURL(file);
+  // Redimensiona y comprime para no saturar el almacenamiento (evita la pantalla en blanco).
+  compressImage(file)
+    .then(cb)
+    .catch((err) => alert(err instanceof Error ? err.message : "No se pudo procesar la imagen."));
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {

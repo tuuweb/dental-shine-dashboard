@@ -4,6 +4,7 @@ import { Star, Send, Camera, X, Instagram, Play } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { useAppData, type Testimonial } from "@/contexts/AppDataContext";
 import { VideoModalTrigger } from "@/components/VideoEmbed";
+import { compressImage } from "@/lib/image";
 
 export function Testimonials() {
   const { t } = useI18n();
@@ -127,9 +128,9 @@ function TestimonialForm({ onClose, onSubmit, sent }: { onClose: () => void; onS
     });
   };
   const upload = (file: File) => {
-    const r = new FileReader();
-    r.onload = () => setF((s) => ({ ...s, avatar: r.result as string }));
-    r.readAsDataURL(file);
+    compressImage(file, 320, 0.8)
+      .then((url) => setF((s) => ({ ...s, avatar: url })))
+      .catch((err) => alert(err instanceof Error ? err.message : "No se pudo procesar la imagen."));
   };
   return (
     <div className="fixed inset-0 z-50 bg-black/60 grid place-items-center p-4" onClick={onClose}>

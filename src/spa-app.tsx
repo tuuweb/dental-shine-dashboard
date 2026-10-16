@@ -15,6 +15,7 @@ import { Appointment } from "@/pages/Appointment";
 import { AdminLogin } from "@/pages/AdminLogin";
 import { AdminDashboard } from "@/pages/AdminDashboard";
 import { ToothLoader } from "@/components/ToothLoader";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export function SpaApp() {
   const [mounted, setMounted] = useState(false);
@@ -27,6 +28,7 @@ export function SpaApp() {
     );
   }
   return (
+    <ErrorBoundary>
     <I18nProvider>
       <AppDataProvider>
         <BrowserRouter>
@@ -52,5 +54,6 @@ export function SpaApp() {
         </BrowserRouter>
       </AppDataProvider>
     </I18nProvider>
+    </ErrorBoundary>
   );
 }
